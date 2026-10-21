@@ -1,0 +1,11 @@
+{
+  "relay_url": "https://relay.example.invalid",
+  "channel": "<your-private-test-channel-id>",
+  "owner_pubkey": "<your-64-character-owner-public-key>",
+  "agent_pubkey": "<your-64-character-managed-agent-public-key>",
+  "principal": "chatgpt-dot-connection",
+  "state_directory": "/absolute/short/path/bridge-state",
+  "buzz_cli": "/absolute/path/to/buzz",
+  "mcp_port": 18302,
+  "provider": "chatgpt-dot"
+}

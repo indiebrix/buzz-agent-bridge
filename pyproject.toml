@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buzz-agent-bridge"
+version = "0.2.0"
+description = "Connect existing remote agents to Buzz through ACP and durable jobs"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = [
+  "agent-client-protocol==0.12.1",
+  "cryptography==50.0.2",
+  "coincurve==21.0.0",
+]
+
+[project.scripts]
+buzz-agent-bridge = "buzz_agent_bridge.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

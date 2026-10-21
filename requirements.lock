@@ -1,0 +1,11 @@
+# Versions validated on CPython 3.11/macOS arm64. No bundled wheels or credentials.
+agent-client-protocol==0.12.1
+cryptography==50.0.2
+coincurve==21.0.0
+pydantic==2.14.1
+pydantic_core==2.50.1
+cffi==2.1.1
+pycparser==3.11
+annotated-types==0.8.0
+typing_extensions==4.16.0
+typing-inspection==0.4.4
