@@ -5,12 +5,21 @@ assistant does not expose a command-line agent harness of its own.
 
 Buzz Agent Bridge presents an ACP interface to Buzz and forwards verified
 requests to the assistant through a provider adapter. **ChatGPT Dot** is the first
-implemented provider, using MCP Events and authenticated job tools. The existing
+implemented provider. Its MCP Events and authenticated tool transport comes from
+the independently installable [ChatGPT Dots Connector](packages/chatgpt-dots/README.md). The existing
 Dot handles the conversation with its own context and tools; the bridge does not
 create another language model or copy its memory.
 
 This is an independent, early-stage project. It is not an official Buzz, OpenAI,
 or xAI product. Provider access and MCP Events availability depend on your account.
+
+Preparing an upgrade from 0.2.0? Read the [1.0 migration](docs/releases/migration-1.0.md)
+first. Thread routing changes require a coordinated host/frontend upgrade.
+See the [execution plan](docs/plans/portable-bridge.md), [architecture decision](docs/adr/0001-portable-core-boundaries.md)
+and [validation status](docs/project/validation.md) for this refactoring.
+
+Contributors use the pinned [Nix flake and direnv development environment](docs/development.md).
+Installing the Python distribution does not require Nix or direnv.
 
 ## What it does
 
@@ -53,6 +62,18 @@ ACP `end_turn` means intake finished. A webhook acknowledgement means the wake-u
 was accepted. Neither means the assistant finished, or that a reply was delivered.
 Only verified relay readback marks delivery complete.
 
+## Two reusable components
+
+`chatgpt-dots-connector` provides configurable Dot event subscriptions, signed
+callbacks and authenticated tool transport without Buzz/ACP/Nostr dependencies.
+The bridge supplies Buzz policy, durable jobs and the sole publisher. They share
+this repository and have separate wheels. See [components](docs/components.md)
+and [the decision and alternatives](docs/adr/0002-independent-dot-connector.md).
+
+The connector's non-Buzz build-review example runs in a clean environment with
+only that wheel. It verifies an independent event/schema/tool contract using a
+synthetic callback; it is not a claim of another live provider account.
+
 ## Register in Buzz and connect your Dot
 
 You need a Unix host, Python 3.11+, Buzz Desktop and its CLI, a private test channel,
@@ -66,7 +87,7 @@ build toolchain.
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install -c requirements.lock .
+.venv/bin/python -m pip install -c requirements.lock ./packages/chatgpt-dots .
 .venv/bin/buzz-agent-bridge --version
 ```
 

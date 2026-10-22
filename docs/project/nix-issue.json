@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "project_url": "https://github.com/orgs/indiebrix/projects/2",
+  "project_id": "PVT_kwDOFBuYbM4BoMYv",
+  "additional_units": [
+    {
+      "id": "U07",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U07 -->",
+      "title": "Pin the Nix flake and direnv development environment",
+      "commit_subject": "build: add locked Nix and direnv development tools",
+      "files": [
+        "flake.nix",
+        "flake.lock",
+        ".envrc",
+        ".gitignore",
+        ".github/workflows/ci.yml",
+        "scripts/check_nix_environment.sh",
+        "scripts/check_distribution.py",
+        "MANIFEST.in",
+        "AGENTS.md",
+        "README.md",
+        "docs/development.md",
+        "docs/plans/portable-bridge.md",
+        "docs/project/nix-development.md",
+        "docs/project/nix-issue.json",
+        "docs/project/status.md",
+        "docs/project/validation.md",
+        "docs/project/handoff.md"
+      ],
+      "acceptance": [
+        "Pin nixpkgs revision/NAR hash and use one Python 3.11/tool declaration on Linux/macOS.",
+        "Keep Python wheel and non-Nix installation independent of Nix/direnv.",
+        "Pass static Nix/Bash/YAML checks and post-change source/build/clean-install verification.",
+        "Run unchanged-lock nix flake check and Nix environment acceptance on Linux/macOS.",
+        "Review .envrc and verify direnv entry/exit after explicit host trust authorization.",
+        "Apply the version-1 delta without losing mini validation, skill installation or Issue links."
+      ],
+      "version_impact": "none: developer tooling; candidate stays 1.0.0, immutable work tag after actual completion",
+      "issue_number": null,
+      "issue_url": null,
+      "pr_url": null,
+      "commit_sha": null,
+      "work_tag": null,
+      "status": "static verification complete; Nix execution/host trust and remote linkage pending",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U07 -->\n\nPin the Nix flake and direnv development environment\n\nAcceptance criteria:\n- [ ] Pin nixpkgs revision/NAR hash and use one Python 3.11/tool declaration on Linux/macOS.\n- [ ] Keep Python wheel and non-Nix installation independent of Nix/direnv.\n- [ ] Pass static Nix/Bash/YAML checks and post-change source/build/clean-install verification.\n- [ ] Run unchanged-lock nix flake check and Nix environment acceptance on Linux/macOS.\n- [ ] Review .envrc and verify direnv entry/exit after explicit host trust authorization.\n- [ ] Apply the version-1 delta without losing mini validation, skill installation or Issue links.\n\nVersion impact: none: developer tooling; candidate stays 1.0.0, immutable work tag after actual completion.\n\nEvidence: docs/project/nix-development.md and validation.md. Cloud has no Nix/direnv; do not close this unit until execution acceptance is recorded.\n"
+    }
+  ],
+  "existing_units": "Preserve U01-U06 and existing actual Issue links; this file only adds U07."
+}

@@ -56,6 +56,16 @@ Cancellation before admission can prevent intake. Cancellation after admission
 fences future effects but cannot assert that a remote provider has stopped. The
 current ChatGPT adapter has no remote execution-stop API.
 
+An authorization or signed-source rejection before effect preparation marks the
+outbox entry `blocked`; it has no destination or HTTP attempt. A trusted operator
+embedding may explicitly call `resume_blocked_wake` once after reviewing the cause.
+The broker requires the same request and generation, revalidates scope and signed
+source, and rejects any attempt metadata, prior resume, completion, cancellation,
+quarantine or expiry. It only reopens the existing wake intent for the ordinary
+single-attempt worker. Sending, uncertain and acknowledged effects never qualify;
+no automatic retry or remote recovery endpoint is added. Safe audit codes retain
+the gate reason and relay HTTP status without URLs, credentials or message text.
+
 ## State and lifecycle
 
 The state directory is `0700`, files and sockets `0600`, and Unix peers must have
@@ -72,3 +82,22 @@ Backups do not roll back external effects. Operators must explicitly quarantine
 restored work; arbitrary rollback cannot be detected without an external monotonic
 authority. Capacity is bounded at 10,000 jobs until a reviewed retention policy
 exists. See [security](../SECURITY.md).
+
+## Internal source and provider boundaries
+
+`core/broker.py` consumes `SourcePolicy.read` and an immutable `VerifiedSource`.
+The trusted `adapters/buzz/source.py` policy re-fetches signed evidence and enforces
+owner, channel, kind, time and thread interpretation. The lifecycle rechecks
+authorization and stable source fields. `adapters/buzz/publisher.py` alone sends
+via the official CLI and checks the exact signed receipt. A signed-readback flag
+is a contract between reviewed local components, never proof from remote content.
+
+`adapters/chatgpt` owns registration and signed wake-up; it never obtains the Buzz
+key or starts another Dot. The callback verification cache and signing overlap
+last at most five minutes. Expired subscriptions cannot wake jobs. HTTP receipt
+remains acknowledgement only. Legacy module paths are forwarding facades.
+
+Schema 2, job IDs and original source snapshots remain stable. Current verified
+source routing is used in ephemeral publication/reconciliation plans. See the
+[1.0 migration](releases/migration-1.0.md) for the deliberate major change to
+reply-only and root-only source semantics.

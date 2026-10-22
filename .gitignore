@@ -1,4 +1,7 @@
 .venv/
+.direnv/
+result
+result-*
 __pycache__/
 *.py[cod]
 *.egg-info/

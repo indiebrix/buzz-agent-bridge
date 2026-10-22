@@ -42,7 +42,7 @@ class LocalServer(socketserver.ThreadingUnixStreamServer):
     daemon_threads = False
     block_on_close = True
 
-    def __init__(self, path, broker):
+    def __init__(self, path, broker, diagnostics=None, delivery_proof=None):
         self.path = Path(path)
         private_directory(self.path.parent)
         if len(os.fsencode(self.path)) > 100:
@@ -60,6 +60,8 @@ class LocalServer(socketserver.ThreadingUnixStreamServer):
                 else:
                     raise RuntimeError("Socket already active")
         self.broker = broker
+        self.diagnostics = diagnostics
+        self.delivery_proof = delivery_proof
         super().__init__(str(self.path), Handler)
         os.chmod(self.path, 0o600)
         self.inode = self.path.stat().st_ino
@@ -94,6 +96,14 @@ class Handler(socketserver.StreamRequestHandler):
                 result = broker.cancel_admission(**args)
             elif request["method"] == "status" and set(args) == {"ids"}:
                 result = broker.status(broker.principal, args["ids"])
+            elif request["method"] == "diagnostics" and not args:
+                from .diagnostics import snapshot
+                result = self.server.diagnostics() if self.server.diagnostics else snapshot(broker)
+            elif request["method"] == "resume_blocked_wake" and set(args) == {"request_id", "generation"}:
+                result = broker.resume_blocked_wake(broker.principal, args["request_id"], args["generation"])
+            elif (request["method"] == "delivery_proof" and set(args) == {"request_id", "generation"}
+                  and self.server.delivery_proof is not None):
+                result = self.server.delivery_proof(**args)
             elif request["method"] == "identity" and not args:
                 result = {"pubkey": broker.own_pubkey, "channel": broker.channel, "owner": broker.owner}
             else:

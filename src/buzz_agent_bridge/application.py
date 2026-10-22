@@ -5,12 +5,14 @@ import time
 
 from buzz_agent_bridge.crypto import AEADCodec, verify_nostr
 from buzz_agent_bridge.http import ProtectedStore, PublicHTTPS, RPC, http_server
-from .broker import Broker
+from .core.broker import Broker
+from .adapters.buzz.source import BuzzSourcePolicy
 from .ipc import LocalServer
 from .ledger import Ledger, private_directory
 from .tools import JobTools
-from .transports import CliTransport
+from .adapters.buzz.publisher import CliTransport
 from .providers import bind_provider_scope, get_provider
+from .diagnostics import snapshot, delivery_proof
 
 
 class Application:
@@ -23,8 +25,9 @@ class Application:
     def __init__(self, directory, storage_key, principal, channel, owner, own_pubkey,
                  authenticate, authorize, fetch, cli_binary, credential_env, *,
                  activation, relay_url="https://relay.example.invalid", now=time.time, post=None, audit=lambda value: None,
-                 restored=False, subscriptions_directory=None, provider=None):
+                 restored=False, subscriptions_directory=None, provider=None, query=None):
         self.provider = provider or get_provider()
+        self.query = query
         directory = private_directory(directory)
         self.codec = AEADCodec(storage_key)
         self.ledger = Ledger(directory / "ledger", self.codec.seal, self.codec.open, restored=restored)
@@ -38,8 +41,10 @@ class Application:
         self.subscription_lock = threading.RLock()
         self.authorize = lambda actor, target: actor == principal and target == channel and authorize(actor, target)
         try:
-            self.broker = Broker(self.ledger, principal, channel, owner, self.authorize, fetch,
-                                 verify_nostr, activation=activation, now=now, audit=audit)
+            self.broker = Broker(self.ledger, principal, channel, owner, self.authorize,
+                                 BuzzSourcePolicy(fetch, verify_nostr, owner, channel,
+                                                  activation=activation, now=now),
+                                 activation=activation, now=now, audit=audit)
         except BaseException:
             self.close()
             raise
@@ -86,7 +91,7 @@ class Application:
     def run(self, stop, *, socket_path, port=18302, on_ready=lambda: None):
         servers, threads = [], []
         try:
-            servers.append(LocalServer(socket_path, self.broker))
+            servers.append(LocalServer(socket_path, self.broker, self.diagnostics, self.delivery_proof))
             servers.append(self.server(port))
             for server in servers:
                 thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -113,3 +118,10 @@ class Application:
     def close(self):
         self.subscriptions.close()
         self.ledger.close()
+
+    def diagnostics(self):
+        with self.broker.effects, self.subscription_lock:
+            return snapshot(self.broker, self.subscriptions)
+
+    def delivery_proof(self, request_id, generation):
+        return delivery_proof(self.broker, self.publisher, self.query, request_id, generation)

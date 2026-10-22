@@ -54,6 +54,7 @@ class SetupTests(unittest.TestCase):
         self.assertFalse(report["runtime_checked"])
         state = self.root / "state"
         state.mkdir(mode=0o755)
+        state.chmod(0o755)  # Explicit fixture, independent of the process umask.
         self.assertFalse(doctor(path)["state_directory_safe"])
         state.rmdir()
         state.symlink_to(self.root / "absent")

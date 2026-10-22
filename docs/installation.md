@@ -2,10 +2,14 @@
 
 ## Requirements and scope
 
+For the reasoning behind the two components and transport choice, see
+[ADR 0002](adr/0002-independent-dot-connector.md). Installing the connector alone
+does not require Buzz; a Buzz deployment installs both distributions.
+
 Use a Unix host. The deployment path was developed against Buzz Desktop 0.5.28;
 Windows is not supported by the Unix-socket and process-lock implementation.
 Use Python 3.11 or newer. The configurable package has a clean installation check
-on Python 3.11/macOS arm64; the original runtime was validated on Python 3.14.8.
+on Python 3.11/macOS arm64 and Python 3.12/Linux x86-64; the original runtime was validated on Python 3.14.8.
 The ACP SDK is pinned to 0.12.1. Build prerequisites for `coincurve` depend on your Python
 and platform; use a supported wheel or follow the dependency's official build
 instructions instead of weakening signature verification.
@@ -14,11 +18,28 @@ This guide uses one managed Buzz identity, one owner, one private channel, and o
 existing ChatGPT Dot. Do not run a second receiver or publisher for that identity.
 Keep existing working configuration and encrypted state available for rollback.
 
-## 1. Install the package
+For an existing deployment, read the [1.0 migration and recovery limits](releases/migration-1.0.md)
+before installing over any existing environment. Keep the same Dot and scope.
+
+## 1. Install the packages
+
+The release contains the independent connector wheel, the bridge wheel,
+`requirements.lock` and `SHA256SUMS`. Verify the checksums before installation.
+From a directory containing the downloaded assets:
+
+```sh
+shasum -a 256 -c SHA256SUMS
+python3 -m venv .venv
+.venv/bin/python -m pip install -c requirements.lock \
+  chatgpt_dots_connector-1.0.0-py3-none-any.whl \
+  buzz_agent_bridge-1.0.0-py3-none-any.whl
+```
+
+For a source checkout or extracted source archive, install both local projects:
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install -c requirements.lock .
+.venv/bin/python -m pip install -c requirements.lock ./packages/chatgpt-dots .
 ```
 
 Use the resulting absolute `buzz-agent-bridge` executable path in Buzz. Do not put
@@ -47,8 +68,9 @@ the owner's public key, and the channel identifier for the next step.
 
 ## 3. Configure the deployment
 
-Copy `examples/bridge.json.example` outside the checkout. Replace every placeholder
-with your own values. Use an absolute, short state path owned by the current user;
+Run `buzz-agent-bridge init --output /absolute/path/bridge.json` to enter the
+public values and create the configuration safely. Alternatively copy
+`examples/bridge.json.example` outside the checkout and replace its placeholders. Use an absolute, short state path owned by the current user;
 the state directory must have mode `0700`. Keep configuration non-world-writable
 (recommended `0600`). `buzz_cli` is the official Buzz executable that supports
 `messages send`; `relay_url` is that deployment's HTTPS origin.
@@ -63,6 +85,47 @@ Alternatively, `buzz-agent-bridge init --output /absolute/path/bridge.json` asks
 the public values and writes the correct file permissions without overwriting any
 existing configuration. `doctor --config ...` checks executable and state paths
 without prompting for secrets or connecting to the network.
+
+After the host is running, use the installed operator interface:
+
+```sh
+buzz-agent-bridge status --config /absolute/path/bridge.json
+buzz-agent-bridge status --config /absolute/path/bridge.json --request-id job_<actual-id>
+```
+
+The first command reports aggregate execution/dispatch/delivery counts and active
+subscriptions without message text or credential values. It checks the configured
+managed identity through the same-user socket. It does not prove current relay
+membership or credential validity. The second reads one actual job; execution,
+wake acknowledgement and delivery are separate fields.
+
+If a wake is `blocked` before any effect attempt, inspect the host's redacted
+diagnostic event/stage and resolve the underlying source or membership problem.
+Then explicitly request recovery for that exact job and generation:
+
+```sh
+buzz-agent-bridge resume-wake --config /absolute/path/bridge.json \
+  --request-id job_<actual-id> --generation <actual-generation>
+```
+
+This revalidates current source and authorization, and requeues the original
+generation once. It does not immediately send a message or create another job.
+Cancelled, quarantined, expired, already attempted/uncertain, completed or already
+resumed work is rejected. Never use it as a general retry command. An uncertain
+result requires provider evidence and the existing explicit reconciliation path.
+
+For an already delivered job, independently read its current signed relay receipt:
+
+```sh
+buzz-agent-bridge verify-delivery --config /absolute/path/bridge.json \
+  --request-id job_<actual-id> --generation <actual-generation>
+```
+
+This command revalidates the source, exact response, signer and thread, then checks
+for a single matching response in a bounded 100-event query. It never completes,
+publishes or retries work. A truncated relay window is not a global exactly-once
+guarantee. The installed public host provides this interface; an older embedding
+host must supply the read-only query callback explicitly or reports it unavailable.
 
 ## 4. Start the durable host
 
