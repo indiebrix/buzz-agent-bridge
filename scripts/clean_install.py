@@ -12,6 +12,13 @@ import tomllib
 import venv
 
 
+def assert_installed_location(module, environment):
+    # macOS may report /private/tmp while a temporary path uses the /tmp alias.
+    # Resolve both sides, retaining the rejection of links outside the venv.
+    assert Path(module).resolve(strict=True).is_relative_to(
+        Path(environment).resolve(strict=True)), 'Installed module escaped the clean environment'
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('wheel', type=Path)
@@ -21,7 +28,7 @@ def main():
     args = parser.parse_args()
     wheel, constraints = args.wheel.resolve(strict=True), args.constraints.resolve(strict=True)
     with tempfile.TemporaryDirectory(prefix='bab-install-', dir='/tmp') as temporary:
-        root = Path(temporary)
+        root = Path(temporary).resolve(strict=True)
         environment = root / 'clean venv'
         venv.EnvBuilder(with_pip=True).create(environment)
         python = environment / 'bin/python'
@@ -41,7 +48,7 @@ def main():
             'import json,buzz_agent_bridge as b; from importlib.metadata import version; '
             'assert version("buzz-agent-bridge")==b.VERSION; '
             'print(json.dumps({"version":b.VERSION,"module":b.__file__}))']))
-        assert Path(installed['module']).is_relative_to(environment)
+        assert_installed_location(installed['module'], environment)
         assert run([command, '--version']).strip() == installed['version']
         config = root / 'bridge.json'
         harness = json.loads(run([command, 'harness', '--config', config]))

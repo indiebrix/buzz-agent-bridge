@@ -22,8 +22,9 @@ synthetic single-channel TOML loaded, and malformed or unsupported configuration
 was rejected. This is not a build of the entire Buzz workspace or a live receiver
 and relay test.
 
-Only publication documentation was updated after these code checks. Product
-runtime, tests, dependencies and Nix inputs remain identical to that candidate.
+Product runtime, product tests, dependencies and Nix inputs remain identical to
+that candidate. Publication documentation and the CI installation harness have
+subsequent changes recorded below.
 Remote CI on the draft head is recorded on GitHub. Candidate live Dot/relay
 acceptance is still blocked by the acceptance deployment's missing managed-agent
 configuration. Previous-version live results are not reused. Optional real macOS
@@ -132,3 +133,25 @@ reported macOS/Python 3.11 version-1 result is preserved separately in
 [nix-development.md](nix-development.md); it does not prove this amendment's
 Nix acceptance. Handoff manifests record exact final scan and patch/delta
 application/hash results. The standalone skill source has not changed.
+
+## First remote CI and installation-harness correction
+
+[Initial CI run](https://github.com/indiebrix/buzz-agent-bridge/actions/runs/39761929947)
+on the initial review commit passed both Linux package jobs, both Nix jobs
+(Linux and macOS, including disposable direnv), and the secret scan. Both macOS
+package jobs passed source tests/build but failed the clean-install path assertion.
+The installed module and its temporary virtual environment used equivalent
+`/private/tmp` and `/tmp` spellings.
+
+The installation harness now canonicalizes the temporary root and compares
+resolved module/environment paths. Two added regression checks accept an alias to
+the same environment and reject both an outside module and a symlink escape.
+Those checks pass locally and run in each package CI job. Runtime security checks
+are unchanged. The follow-up head's complete remote result must be read from the
+PR; the initial failed run is not reported as a full pass.
+
+The corrected harness was then executed on macOS against a freshly rebuilt wheel:
+installation outside the checkout passed, and its copied suite ran 64 tests with
+63 passes and one optional installed-Buzz skip. The two containment regressions
+also passed. Distribution inspection retained MIT and version 1.0.0. No provider
+credentials, operational messages or running deployment were used.

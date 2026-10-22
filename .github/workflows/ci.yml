@@ -56,6 +56,7 @@ jobs:
         shell: bash
         run: |
           umask 077
+          python scripts/test_clean_install.py
           python -m unittest discover -s tests -v
       - name: Build and inspect artifacts
         run: |
