@@ -1,10 +1,10 @@
 # Validation record
 
 Updated 2026-10-22. Candidate: 1.0.0; baseline
-`694642933a791c20d9d85254cd9b61afc3ae5be8`. This record separates published-head
-acceptance from the local independent-connector amendment. No release is claimed.
+`694642933a791c20d9d85254cd9b61afc3ae5be8`. This record separates source checks, installation and actual
+provider acceptance. Publication is recorded by the tagged GitHub Release.
 
-## Current independent-connector amendment
+## Accepted independent-connector composition
 
 macOS arm64, Python 3.11.16, pinned dependencies. All test inputs are synthetic.
 
@@ -18,13 +18,15 @@ macOS arm64, Python 3.11.16, pinned dependencies. All test inputs are synthetic.
 | Compatibility | Existing discovery/tool/event schemas, subscription IDs, encrypted store and schema-2 jobs retained; cross-event routing rejected. |
 | Operator boundary | Same-UID IPC and configured identity checks; metadata-only diagnostics; guarded pre-attempt resume; signed readback and duplicate/forgery rejection. |
 | Locked macOS Nix shell | Flake check and the complete development script passed; both source and clean-install runs passed 78 tests with one unconfigured official-Buzz skip. No developer direnv trust was granted. |
-| Exact amendment head CI and live installation | Pending; previous-head successes do not prove this composition. |
+| Exact runtime-head CI | [`a739867b`](https://github.com/indiebrix/buzz-agent-bridge/commit/a739867b1dae072f9b935fe93d9f44d9742aa794), [run 39782986254](https://github.com/indiebrix/buzz-agent-bridge/actions/runs/39782986254): all seven jobs passed. Final documentation and merge commits receive the same CI gate. |
+| Actual installation and provider acceptance | The two release wheels were installed together; 45 installed files matched their archive members. Existing identity and configuration were retained, with one receiver/publisher and health/readiness HTTP 200. A new authorized source caused one automatic wake and one response attempt; generation 1 reached succeeded/acknowledged/delivered. Public `verify-delivery` independently re-fetched signed source/receipt evidence, exact body/routing and one matching response within 100 events. No replay, recovery or verifier publication occurred. |
 
-The final artifact manifest and test receipts identify the exact source tested.
-Do not infer completion from version numbers alone: both the earlier candidate
-and this amendment carry unreleased 1.0.0 metadata.
+The release checksums identify the exact accepted wheels. Documentation-only
+closure changes do not alter their runtime members; the source inventory records
+the complete release tree. This is acceptance of one installed deployment and
+one new request, not a guarantee for every account or future request.
 
-## Published-head acceptance
+## Earlier published-head acceptance
 
 Head `8b276ff3b843a8a9867a99d820ef3693dbc92296` has verified Alita App attribution.
 [CI run 39768959729](https://github.com/indiebrix/buzz-agent-bridge/actions/runs/39768959729)

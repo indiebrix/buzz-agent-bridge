@@ -1,10 +1,10 @@
 # Product completion status
 
-Updated 2026-10-22. Candidate: **1.0.0**, not yet released.
-[PR #8](https://github.com/indiebrix/buzz-agent-bridge/pull/8) remains a draft.
-Its published head `8b276ff3b843a8a9867a99d820ef3693dbc92296` has seven successful
-CI jobs and a verified App commit. The independent-connector amendment is local;
-that head's CI and live results do not certify the amendment.
+Updated 2026-10-22. Scope: **1.0.0** for both distributions.
+[PR #8](https://github.com/indiebrix/buzz-agent-bridge/pull/8) records integration,
+and the [GitHub Release](https://github.com/indiebrix/buzz-agent-bridge/releases/tag/v1.0.0)
+records the authoritative release target and assets. The accepted runtime head is
+`a739867b1dae072f9b935fe93d9f44d9742aa794`; final closure changes update documentation.
 
 ## Deliverables
 
@@ -18,30 +18,29 @@ that head's CI and live results do not certify the amendment.
 - Separate implementation, clean installation, actual provider acceptance and
   publication evidence. See [validation](validation.md).
 
-| Unit | Issue | Evidence and remaining work |
+| Unit | Issue | Acceptance evidence |
 | --- | --- | --- |
-| Architecture and contracts | [#1](https://github.com/indiebrix/buzz-agent-bridge/issues/1) | Source-based comparison and migration recorded; connector decision added locally. |
-| Personal commit skill | [#2](https://github.com/indiebrix/buzz-agent-bridge/issues/2) | Installed at user level, conflict checks and separate-repository discovery passed. Completion tag pending. |
-| Core and adapters | [#3](https://github.com/indiebrix/buzz-agent-bridge/issues/3) | Recovery and a fresh automatic round trip verified on the published candidate. Amendment acceptance pending. |
-| MCP contracts | [#4](https://github.com/indiebrix/buzz-agent-bridge/issues/4) | Schema, refresh, rotation, expiry and cross-event isolation checks pass locally. |
-| CI and distributions | [#5](https://github.com/indiebrix/buzz-agent-bridge/issues/5) | Two wheels build and install independently; final artifacts and source/artifact scans pass locally; exact-head CI remains a gate. |
-| Release | [#6](https://github.com/indiebrix/buzz-agent-bridge/issues/6) | Merge, immutable work tags and release assets pending. |
-| Nix/direnv | [#7](https://github.com/indiebrix/buzz-agent-bridge/issues/7) | Locked macOS shell and prior Linux/macOS CI passed; amended build script also passes in the locked macOS shell. |
-| Connector and operators | [#9](https://github.com/indiebrix/buzz-agent-bridge/issues/9) | Independent non-Buzz integration and operator regressions pass. Exact-head publication and live-composition gates remain. |
+| Architecture and contracts | [#1](https://github.com/indiebrix/buzz-agent-bridge/issues/1) | Official-source comparison, migration and independent connector decision. |
+| Personal commit skill | [#2](https://github.com/indiebrix/buzz-agent-bridge/issues/2) | User-level installation, conflict checks and discovery in a separate repository. |
+| Core and adapters | [#3](https://github.com/indiebrix/buzz-agent-bridge/issues/3) | Recovery and fresh automatic delivery separately verified; final two-wheel composition also passed a fresh round trip. |
+| MCP contracts | [#4](https://github.com/indiebrix/buzz-agent-bridge/issues/4) | Schema, refresh, rotation, expiry and cross-event isolation checks. |
+| CI and distributions | [#5](https://github.com/indiebrix/buzz-agent-bridge/issues/5) | Independent wheel installs, inspected archives, clean secret scans and seven successful runtime-head CI jobs. |
+| Release | [#6](https://github.com/indiebrix/buzz-agent-bridge/issues/6) | Strict major version and migration; remote merge, annotated tags and release asset checks are recorded on this issue and the Release. |
+| Nix/direnv | [#7](https://github.com/indiebrix/buzz-agent-bridge/issues/7) | Locked macOS development script and Linux/macOS CI; developer-host direnv trust remains an explicit local decision. |
+| Connector and operators | [#9](https://github.com/indiebrix/buzz-agent-bridge/issues/9) | Independent non-Buzz integration, guarded operator tests, exact installed-file comparison and fresh signed relay delivery. |
 
-Issues 1–7 and 9 use the existing organization Project. Reconcile stable markers before
-creating any record; pending IDs are not remote work. No new repository or registry
-publication is implied by the package split.
+Issues 1–7 and 9 are linked to the existing organization Project. Their completion
+records link immutable annotated work tags, the integrating PR and release commit.
+No new repository or package-registry publication is implied by the package split.
 
-## Remaining release sequence
+## Scope and limits
 
-1. Preserve final source/artifact inspection, secret scan and clean-install receipts.
-2. Publish the reviewed amendment to PR #8 and read its exact-head CI results.
-3. Install the exact accepted composition and record its provider acceptance,
-   preserving one managed receiver and publisher. Earlier events are never replayed.
-4. Verify App attribution, merge, create immutable work/release tags, upload both
-   distributions and constraints/checksums, and verify remote results.
+The generic connector is a host-embedded event/tool transport. The host still owns
+authorization, durability and effects. Only ChatGPT Dot is implemented as a remote
+provider; synthetic non-Buzz integration is not a second live account acceptance.
+Real optional macOS Keychain item access and other declared Nix architectures are
+unverified. A build does not establish account eligibility or live delivery.
 
-Public evidence omits personal paths, identity values, credentials and message
-content. Optional real Keychain access and unimplemented providers are not release
-claims. A successful build does not establish account eligibility or live delivery.
+Public evidence omits personal paths, identity values, credentials and messages.
+The release workflow gates publication on exact-head CI, App attribution, accepted
+wheel hashes, a new authorized source and independent signed relay readback.
