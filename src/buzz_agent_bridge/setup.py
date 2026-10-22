@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import stat
+import uuid
 
 from .config import load, validate
 from .providers import PRODUCT_ID, PRODUCT_NAME
@@ -26,6 +27,32 @@ def harness_definition(config_path, executable):
         raise ValueError("Use absolute paths")
     return {"id": PRODUCT_ID, "label": PRODUCT_NAME, "command": str(executable),
             "args": ["managed", "--config", str(config_path)], "env": {}}
+
+
+def receiver_configuration(config_path, output, receive="mentions"):
+    """Prepare a single-channel Buzz config; never mutate a managed agent."""
+    if receive not in ("mentions", "owner-messages"):
+        raise ValueError("Unsupported receive mode")
+    output = Path(output)
+    if not output.is_absolute():
+        raise ValueError("Use an absolute output path")
+    config = load(config_path)
+    # Buzz uses UUID channel IDs. Reject wildcard/non-channel scopes instead of
+    # emitting a config that might be misunderstood as a global subscription.
+    if str(uuid.UUID(config["channel"])) != config["channel"]:
+        raise ValueError("A canonical channel UUID is required")
+    content = ('[[rules]]\nname = "bridge-channel"\nchannels = ['
+               + json.dumps(config["channel"]) + ']\nkinds = [9]\nrequire_mention = '
+               + ("true" if receive == "mentions" else "false") + '\n')
+    descriptor = os.open(output, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(descriptor, "w") as stream:
+        stream.write(content)
+        stream.flush()
+        os.fsync(stream.fileno())
+    return {"file": str(output), "receive": receive,
+            "environment": {"BUZZ_ACP_SUBSCRIBE": "config", "BUZZ_ACP_CONFIG": str(output)},
+            "required_buzz_author_gate": "owner-only", "runtime_changed": False,
+            "restart_required_after_applying": True}
 
 
 def doctor(path):

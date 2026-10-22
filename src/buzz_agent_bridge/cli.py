@@ -21,7 +21,7 @@ from .ledger import private_directory, private_file
 from .managed import HandoffServer, decode_key, handoff
 from .providers import get_provider
 from .relay import RelayReader
-from .setup import configure, doctor, harness_definition
+from .setup import configure, doctor, harness_definition, receiver_configuration
 
 
 def activation(directory):
@@ -111,13 +111,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=VERSION)
     commands = parser.add_subparsers(dest="mode", required=True)
-    for name in ("host", "host-keychain", "managed", "check-config", "doctor", "harness"):
+    for name in ("host", "host-keychain", "managed", "check-config", "doctor", "harness", "receiver-config"):
         command = commands.add_parser(name)
         command.add_argument("--config", required=True)
         if name == "host": command.add_argument("--secrets-fd", type=int, required=True)
         if name == "host-keychain":
             command.add_argument("--service", required=True,
                 help="Dedicated buzz-agent-bridge.<deployment> service; accounts storage_key and mcp_token")
+        if name == "receiver-config":
+            command.add_argument("--output", required=True)
+            command.add_argument("--receive", choices=("mentions", "owner-messages"), default="mentions")
     command = commands.add_parser("init")
     command.add_argument("--output", required=True)
     for name in ("relay-url", "owner-pubkey", "agent-pubkey", "channel", "state-directory", "buzz-cli"):
@@ -132,6 +135,9 @@ def main():
             return 0
         if args.mode == "harness":
             print(json.dumps(harness_definition(args.config, Path(sys.executable).parent / "buzz-agent-bridge"), indent=2))
+            return 0
+        if args.mode == "receiver-config":
+            print(json.dumps(receiver_configuration(args.config, args.output, args.receive), indent=2))
             return 0
         if args.mode == "doctor":
             result = doctor(args.config)

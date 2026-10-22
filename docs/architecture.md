@@ -1,5 +1,8 @@
 # Architecture
 
+See [components and deployment boundaries](components.md) for the included MCP
+server, required external services, and options for a future reusable package.
+
 ## Boundaries
 
 The official `buzz-acp` process is the sole incoming receiver. A thin ACP stdio

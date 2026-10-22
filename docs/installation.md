@@ -66,6 +66,61 @@ without prompting for secrets or connecting to the network.
 
 ## 4. Start the durable host
 
+### Receiver behavior
+
+The host's configured channel does not configure the separate Buzz receiver.
+By default, the managed `buzz-acp` receiver requires mentions. To receive the
+configured owner's messages without mentions in exactly one channel, run:
+
+```sh
+buzz-agent-bridge receiver-config --config /absolute/path/bridge.json \
+  --output /absolute/path/receiver.toml --receive owner-messages
+```
+
+The helper validates the existing public configuration and channel UUID, creates
+a new owner-only `0600` file, and prints the two environment settings to apply.
+It refuses an existing output or symlink and never contacts Buzz or a secret store.
+The file uses the `[[rules]]` syntax read by Buzz 0.5.28's `load_rules` function:
+
+```toml
+[[rules]]
+name = "bridge-channel"
+channels = ["11111111-1111-4111-8111-111111111111"]
+kinds = [9]
+require_mention = false
+```
+
+The UUID above is synthetic. Use the generated file for your deployment. In that
+agent's **Edit → Advanced → Environment variables**, set `BUZZ_ACP_SUBSCRIBE` to
+`config` and `BUZZ_ACP_CONFIG` to the generated absolute path. Keep the existing
+owner-only author setting, single instance, and channel membership. Do not add
+reserved identity/author-gate environment variables or edit managed-agent storage.
+Do not put these settings in global agent defaults. Config mode scopes channels
+through its rules; `--channels` alone is not a substitute for a scoped rule.
+
+Save and restart only the selected agent if a restart has not already happened.
+A running receiver does not automatically reload this TOML. Keep the durable host
+running so the existing identity handoff succeeds. No extra receiver or publisher
+is needed. Creating the file is not proof that the live receiver uses it.
+
+After restart, check that the receiver reports `subscribe=Config`, `respond_to=owner-only`,
+one instance, and the expected channel rule. Send one **new**, authorized owner
+message without a mention and verify its request ID/generation, completion, and
+signed relay reply. Do not replay an old message. Local helper tests validate file
+generation and boundaries; they do not replace this real acceptance test.
+
+To restore mention-only behavior, generate a different output with `--receive mentions`,
+apply that path and restart the same agent. Alternatively restore the exact previous
+two environment settings. Keep keys, the host ledger, subscriptions, and history.
+
+The pinned upstream [README](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-acp/README.md)
+shows a `[channel.UUID]` example, but that version's
+[parser](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-acp/src/config.rs)
+reads a `rules` array. This helper follows the parser. Recheck the installed Buzz
+version and parser when upgrading; an empty rules list can silently receive nothing.
+
+### Host startup
+
 Provision a 32-byte encryption key and a high-entropy MCP bearer token through your
 approved secret manager. Do not commit them or send them in chat. The host accepts
 their JSON representation only over an inherited anonymous pipe:

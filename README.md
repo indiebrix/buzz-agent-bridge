@@ -100,6 +100,21 @@ The wizard writes a `0600` configuration and refuses to overwrite an existing
 deployment. `doctor` checks local configuration and paths; it does not authenticate
 or contact a network. It explicitly reports that runtime and credentials are unchecked.
 
+**Optional: receive owner messages without a mention.** Buzz normally requires an
+@mention. For only the private channel in your bridge configuration, generate:
+
+```sh
+.venv/bin/buzz-agent-bridge receiver-config --config /absolute/path/bridge.json \
+  --output /absolute/path/receiver.toml --receive owner-messages
+```
+
+In **Agents → your agent → Edit → Advanced → Environment variables**, apply the
+two returned values: `BUZZ_ACP_SUBSCRIBE=config` and `BUZZ_ACP_CONFIG` pointing to
+that file. Keep **who can send instructions** at **owner-only**. Save and restart
+only this agent if Buzz has not already restarted it. The helper only writes a
+new `0600` file; it does not edit or restart Buzz. Never use global `subscribe=all`
+for this setup. See [verification and rollback](docs/installation.md#receiver-behavior).
+
 **5. Supply the two host secrets through your secret manager.** Keep the key types
 distinct:
 
