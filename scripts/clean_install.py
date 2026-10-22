@@ -25,8 +25,12 @@ def main():
     parser.add_argument('--constraints', type=Path, required=True)
     parser.add_argument('--tests', type=Path, help='Copy and run the synthetic suite outside the checkout')
     parser.add_argument('--wheelhouse', type=Path, help='Install offline from predownloaded dependency wheels')
+    parser.add_argument('--connector-wheel', type=Path, help='Matching independent connector wheel')
     args = parser.parse_args()
     wheel, constraints = args.wheel.resolve(strict=True), args.constraints.resolve(strict=True)
+    connectors = [args.connector_wheel.resolve(strict=True)] if args.connector_wheel else list(
+        (wheel.parent / 'connector').glob('chatgpt_dots_connector-*.whl'))
+    assert len(connectors) == 1, 'Provide exactly one connector wheel'
     with tempfile.TemporaryDirectory(prefix='bab-install-', dir='/tmp') as temporary:
         root = Path(temporary).resolve(strict=True)
         environment = root / 'clean venv'
@@ -42,7 +46,7 @@ def main():
         install_args = [python, '-m', 'pip', 'install', '-c', constraints]
         if args.wheelhouse:
             install_args += ['--no-index', '--find-links', args.wheelhouse.resolve(strict=True)]
-        run([*install_args, wheel])
+        run([*install_args, connectors[0], wheel])
         run([python, '-m', 'pip', 'check'])
         installed = json.loads(run([python, '-I', '-c',
             'import json,buzz_agent_bridge as b; from importlib.metadata import version; '

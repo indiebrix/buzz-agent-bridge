@@ -19,11 +19,11 @@ trap 'rm -rf "$scratch"' EXIT
 python -m venv "$scratch/venv"
 venv_python="$scratch/venv/bin/python"
 "$venv_python" -m pip install -r requirements-dev.lock
+"$venv_python" -m pip install --no-build-isolation --no-deps -e packages/chatgpt-dots
 "$venv_python" -m pip install --no-build-isolation --no-deps -e .
 umask 077
 "$venv_python" -m unittest discover -s tests -v
-"$venv_python" -m build --no-isolation --outdir "$scratch/dist"
-"$venv_python" scripts/check_distribution.py "$scratch/dist"
+"$venv_python" scripts/build_all.py --outdir "$scratch/dist"
 "$venv_python" -m pip download -r requirements.lock --only-binary=:all: --dest "$scratch/wheelhouse"
 "$venv_python" scripts/clean_install.py "$scratch"/dist/*.whl \
   --constraints requirements.lock --tests tests --wheelhouse "$scratch/wheelhouse"

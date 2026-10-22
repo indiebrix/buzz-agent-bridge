@@ -354,16 +354,22 @@ class TransportTests(Fixture, unittest.TestCase):
 
     def test_webhook_contract_one_subscription_and_no_automatic_retry(self):
         ident = self.admit()
-        subscriptions = {"sub_fixture": {"principal": "dot", "channel": CHANNEL, "expires": NOW + 60,
-                         "url": "https://callback.example/hook",
-                         "secret": "whsec_" + base64.b64encode(bytes(range(32))).decode()}}
+        from buzz_agent_bridge.events import Events, NAME
+        subscriptions = {}
+        registration = Events(subscriptions, lambda p, c: True,
+            lambda u, b, h: (200, {"challenge": json.loads(b)["challenge"]}), lambda: NOW, self.agent.pubkey)
+        # Use an actual issued subscription ID, including its event-name binding.
+        sub_id = registration.handle("dot", "events/subscribe", {
+            "name": NAME, "arguments": {"channel": CHANNEL}, "delivery": {
+                "mode": "webhook", "url": "https://callback.example/hook",
+                "secret": "whsec_" + base64.b64encode(bytes(range(32))).decode()}})["id"]
         post = Mock(return_value=(200, {}))
         transport = WebhookTransport(subscriptions, post, lambda p, c: True,
                                      lambda: NOW, threading.RLock())
         self.broker.drain_one("wake", transport)
         url, body, hdr = post.call_args.args
         self.assertEqual(json.loads(body)["data"]["message_id"], self.ledger.get("jobs", ident)["source"]["message_id"])
-        self.assertEqual(hdr["X-MCP-Subscription-Id"], "sub_fixture")
+        self.assertEqual(hdr["X-MCP-Subscription-Id"], sub_id)
         self.assertEqual(self.ledger.get("jobs", ident)["execution"], "accepted")
         self.assertIsNone(self.broker.drain_one("wake", transport))
         self.assertEqual(post.call_count, 1)

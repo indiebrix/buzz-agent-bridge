@@ -37,6 +37,8 @@ def main():
         runtime=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign)
                      and any(isinstance(t,ast.Name) and t.id=='VERSION' for t in n.targets))
         assert runtime==metadata['Version']
+        assert 'chatgpt-dots-connector==1.0.0' in metadata.get_all('Requires-Dist', [])
+        assert not any(n.startswith('chatgpt_dots/') for n in names), 'Independent package must not be vendored'
         assert not any(n.startswith(('tests/','.agents/','scripts/')) for n in names)
         wheel_count=len(names)
     with tarfile.open(sources[0]) as archive:

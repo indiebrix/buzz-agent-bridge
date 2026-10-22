@@ -22,6 +22,7 @@ from .managed import HandoffServer, decode_key, handoff
 from .providers import get_provider
 from .relay import RelayReader
 from .setup import configure, doctor, harness_definition, receiver_configuration
+from .diagnostics import audit
 
 
 def activation(directory):
@@ -90,7 +91,7 @@ def host(config, descriptor):
             if stop.is_set(): return
             if time.monotonic() >= deadline: raise RuntimeError("Managed startup timed out")
         signer, auth_tag = bootstrap.signer, bootstrap.auth_tag
-        relay = RelayReader(config, signer, auth_tag)
+        relay = RelayReader(config, signer, auth_tag, audit=audit)
         if not relay.authorize(config["principal"], config["channel"]):
             raise PermissionError("Managed channel membership unavailable")
         app = Application(directory, storage_key, config["principal"], config["channel"],
@@ -98,7 +99,7 @@ def host(config, descriptor):
             relay.authorize, relay.fetch, config["buzz_cli"],
             lambda: {"PATH": "/usr/bin:/bin", "BUZZ_PRIVATE_KEY": signer.key.secret.hex(), "BUZZ_AUTH_TAG": auth_tag},
             activation=activation(directory), relay_url=config["relay_url"],
-            provider=get_provider(config["provider"]))
+            provider=get_provider(config["provider"]), audit=audit, query=relay.query)
         app.run(stop, socket_path=directory / "ipc/socket", port=config["mcp_port"],
                 on_ready=lambda: print("Buzz Agent Bridge ready.", file=sys.stderr, flush=True))
     finally:
@@ -111,7 +112,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=VERSION)
     commands = parser.add_subparsers(dest="mode", required=True)
-    for name in ("host", "host-keychain", "managed", "check-config", "doctor", "harness", "receiver-config"):
+    for name in ("host", "host-keychain", "managed", "check-config", "doctor", "harness", "receiver-config", "status", "resume-wake", "verify-delivery"):
         command = commands.add_parser(name)
         command.add_argument("--config", required=True)
         if name == "host": command.add_argument("--secrets-fd", type=int, required=True)
@@ -121,6 +122,11 @@ def main():
         if name == "receiver-config":
             command.add_argument("--output", required=True)
             command.add_argument("--receive", choices=("mentions", "owner-messages"), default="mentions")
+        if name == "status":
+            command.add_argument("--request-id", action="append", default=[])
+        if name in ("resume-wake", "verify-delivery"):
+            command.add_argument("--request-id", required=True)
+            command.add_argument("--generation", type=int, required=True)
     command = commands.add_parser("init")
     command.add_argument("--output", required=True)
     for name in ("relay-url", "owner-pubkey", "agent-pubkey", "channel", "state-directory", "buzz-cli"):
@@ -150,6 +156,21 @@ def main():
             asyncio.run(serve("/nonexistent/buzz-agent-bridge-model-probe/socket"))
             return 0
         config = load(args.config)
+        if args.mode in ("status", "resume-wake", "verify-delivery"):
+            client = LocalClient(Path(config["state_directory"]) / "ipc/socket")
+            identity = client.call("identity", {})
+            if identity != {"pubkey": config["agent_pubkey"], "owner": config["owner_pubkey"],
+                            "channel": config["channel"]}:
+                raise PermissionError("Configured host identity mismatch")
+            if args.mode in ("resume-wake", "verify-delivery"):
+                result = client.call("resume_blocked_wake" if args.mode == "resume-wake" else "delivery_proof", {
+                    "request_id": args.request_id, "generation": args.generation})
+            elif args.request_id:
+                result = client.call("status", {"ids": args.request_id})
+            else:
+                result = client.call("diagnostics", {})
+            print(json.dumps(result, indent=2))
+            return 0
         if args.mode == "host-keychain":
             from .keychain import KeychainReadError, read_keychain_secrets
             from .secret_launcher import launch_host
@@ -162,8 +183,11 @@ def main():
         elif args.mode == "host": host(config, args.secrets_fd)
         else: print("Configuration valid; no credentials or connections checked.")
         return 0
-    except Exception:
-        print("Buzz Agent Bridge unavailable; configuration, credentials or readiness require attention.", file=sys.stderr)
+    except Exception as error:
+        category = type(error).__name__
+        if category not in {"FileNotFoundError", "PermissionError", "ConnectionRefusedError", "TimeoutError", "ValueError", "RuntimeError", "OSError"}:
+            category = "operation_failed"
+        audit({"event": "operation_failed", "stage": args.mode.replace("-", "_"), "state": category})
         return 1
 
 

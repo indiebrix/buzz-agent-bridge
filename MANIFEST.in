@@ -8,3 +8,5 @@ recursive-include scripts *.py
 recursive-include scripts *.sh
 recursive-include contrib/commit-skill *.md *.py *.json
 recursive-include docs *.json
+include packages/chatgpt-dots/pyproject.toml packages/chatgpt-dots/README.md packages/chatgpt-dots/LICENSE
+recursive-include packages/chatgpt-dots/src *.py

@@ -11,6 +11,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.11"
 dependencies = [
+  "chatgpt-dots-connector==1.0.0",
   "agent-client-protocol==0.12.1",
   "cryptography==50.0.2",
   "coincurve==21.0.0",

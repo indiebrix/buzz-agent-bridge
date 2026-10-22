@@ -38,7 +38,8 @@ private-channel end-to-end test for a new real integration.
 
 The source-policy seam in `core/contracts.py` is internal and independently tested
 with a synthetic non-Nostr source. It does not add a supported messaging platform.
-Provider code stays under `adapters/chatgpt`; Buzz verification/publication lives
-under `adapters/buzz`. Existing `AgentProvider` and `ProviderBinding` interfaces
+Buzz event/job serialization stays under `adapters/chatgpt` and delegates generic
+subscription, signing and transport to the independent `chatgpt_dots` package.
+Buzz verification/publication lives under `adapters/buzz`. Existing `AgentProvider` and `ProviderBinding` interfaces
 remain in `providers.py`. A response publisher must return explicit signed-readback
 evidence; acknowledgement alone leaves delivery uncertain.

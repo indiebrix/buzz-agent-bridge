@@ -1,39 +1,47 @@
-# Portable bridge progress
+# Product completion status
 
-Updated 2026-10-22. Baseline: `694642933a791c20d9d85254cd9b61afc3ae5be8`.
-Review branch: `refactor/portable-bridge`. Candidate version: `1.0.0`.
-This is a review candidate; no 1.0.0 release or merge is claimed.
+Updated 2026-10-22. Candidate: **1.0.0**, not yet released.
+[PR #8](https://github.com/indiebrix/buzz-agent-bridge/pull/8) remains a draft.
+Its published head `8b276ff3b843a8a9867a99d820ef3693dbc92296` has seven successful
+CI jobs and a verified App commit. The independent-connector amendment is local;
+that head's CI and live results do not certify the amendment.
 
-| Unit | Issue | Current evidence and remaining gate |
+## Deliverables
+
+- One repository, two independently installable distributions: generic
+  `chatgpt-dots-connector` and Buzz-specific `buzz-agent-bridge`.
+- Official Buzz custom ACP harness, scoped receiver configuration and documented
+  setup. Local status, guarded wake recovery and signed delivery verification.
+- MCP Events for existing-Dot ingress, CLI for operators and optional skills for
+  workflows. This choice follows supported semantics; there is no MCP preference.
+  See [ADR 0002](../adr/0002-independent-dot-connector.md).
+- Separate implementation, clean installation, actual provider acceptance and
+  publication evidence. See [validation](validation.md).
+
+| Unit | Issue | Evidence and remaining work |
 | --- | --- | --- |
-| Architecture and compatibility | [#1](https://github.com/indiebrix/buzz-agent-bridge/issues/1) | ADR, protocol source review and migration prepared. |
-| Commit skill and release policy | [#2](https://github.com/indiebrix/buzz-agent-bridge/issues/2) | Generic distribution and installer validated; user-level installation remains an operator action. |
-| Core, source and provider adapters | [#3](https://github.com/indiebrix/buzz-agent-bridge/issues/3) | Local synthetic and crash tests pass; candidate live Dot/relay acceptance remains pending. |
-| MCP contracts | [#4](https://github.com/indiebrix/buzz-agent-bridge/issues/4) | Schema compatibility, refresh and rotation tests pass locally. |
-| CI and distributions | [#5](https://github.com/indiebrix/buzz-agent-bridge/issues/5) | Build and isolated installation pass locally; remote CI is checked on the draft PR head. |
-| Reviewed release | [#6](https://github.com/indiebrix/buzz-agent-bridge/issues/6) | Draft review only. Merge, completion tags and release remain gated. |
-| Nix and direnv | [#7](https://github.com/indiebrix/buzz-agent-bridge/issues/7) | macOS arm64 Nix realization and locked shell pass; remote matrix and disposable direnv exercise remain CI gates. |
+| Architecture and contracts | [#1](https://github.com/indiebrix/buzz-agent-bridge/issues/1) | Source-based comparison and migration recorded; connector decision added locally. |
+| Personal commit skill | [#2](https://github.com/indiebrix/buzz-agent-bridge/issues/2) | Installed at user level, conflict checks and separate-repository discovery passed. Completion tag pending. |
+| Core and adapters | [#3](https://github.com/indiebrix/buzz-agent-bridge/issues/3) | Recovery and a fresh automatic round trip verified on the published candidate. Amendment acceptance pending. |
+| MCP contracts | [#4](https://github.com/indiebrix/buzz-agent-bridge/issues/4) | Schema, refresh, rotation, expiry and cross-event isolation checks pass locally. |
+| CI and distributions | [#5](https://github.com/indiebrix/buzz-agent-bridge/issues/5) | Two wheels build and install independently; final artifacts and source/artifact scans pass locally; exact-head CI remains a gate. |
+| Release | [#6](https://github.com/indiebrix/buzz-agent-bridge/issues/6) | Merge, immutable work tags and release assets pending. |
+| Nix/direnv | [#7](https://github.com/indiebrix/buzz-agent-bridge/issues/7) | Locked macOS shell and prior Linux/macOS CI passed; amended build script also passes in the locked macOS shell. |
+| Connector and operators | [#9](https://github.com/indiebrix/buzz-agent-bridge/issues/9) | Independent non-Buzz integration and operator regressions pass. Exact-head publication and live-composition gates remain. |
 
-All seven issues are tracked in the existing organization Project. Reuse these
-records; do not create replacements on an uncertain response. See
-[validation](validation.md) for executed checks and their limits.
+Issues 1–7 and 9 use the existing organization Project. Reconcile stable markers before
+creating any record; pending IDs are not remote work. No new repository or registry
+publication is implied by the package split.
 
-## Live acceptance boundary
+## Remaining release sequence
 
-The candidate has not completed a real ChatGPT Dot and Buzz relay round trip.
-The private acceptance deployment is blocked by an unresolved managed-agent
-configuration in Buzz; registration recovery is being handled separately from
-product publication. No identity, credentials, private configuration, message
-content or operational state is included in this repository. A historical test
-of 0.2.0 does not validate 1.0.0.
+1. Preserve final source/artifact inspection, secret scan and clean-install receipts.
+2. Publish the reviewed amendment to PR #8 and read its exact-head CI results.
+3. Install the exact accepted composition and record its provider acceptance,
+   preserving one managed receiver and publisher. Earlier events are never replayed.
+4. Verify App attribution, merge, create immutable work/release tags, upload both
+   distributions and constraints/checksums, and verify remote results.
 
-Before release, obtain a new authorized source, verify its current request and
-generation, and confirm delivered status with a signed relay event and no duplicate
-reply. Preserve the single receiver/publisher and do not replay pending work.
-
-## Publication rules
-
-Publish through the authorized App, verify remote author/signature and exact tree,
-and inspect CI on the current PR head. Keep this change in draft review until
-remaining acceptance gates are met. Do not merge, force-push, replace tags or
-publish a completed release merely to mark preparation finished.
+Public evidence omits personal paths, identity values, credentials and message
+content. Optional real Keychain access and unimplemented providers are not release
+claims. A successful build does not establish account eligibility or live delivery.

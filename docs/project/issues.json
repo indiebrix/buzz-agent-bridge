@@ -4,8 +4,7 @@
   "project_title": "buzz-agent-bridge",
   "repository": "indiebrix/buzz-agent-bridge",
   "baseline": "694642933a791c20d9d85254cd9b61afc3ae5be8",
-  "remote_owner": "existing mini Alita App session",
-  "cloud_remote_writes": false,
+  "remote_owner": "current project session via the approved Alita GitHub App",
   "units": [
     {
       "id": "U01",
@@ -24,12 +23,12 @@
         "Record strict major decision and finite acceptance criteria."
       ],
       "version_impact": "none",
-      "issue_number": null,
-      "issue_url": null,
-      "pr_url": null,
+      "issue_number": 1,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/1",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
       "commit_sha": null,
       "work_tag": null,
-      "status": "verified locally; remote tracking/publication pending"
+      "status": "tracked remotely; current evidence and remaining gates in docs/project/validation.md"
     },
     {
       "id": "U02",
@@ -53,12 +52,12 @@
         "Use stable issue markers and immutable work tags without duplicate creates."
       ],
       "version_impact": "none",
-      "issue_number": null,
-      "issue_url": null,
-      "pr_url": null,
+      "issue_number": 2,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/2",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
       "commit_sha": null,
       "work_tag": null,
-      "status": "distribution verified locally; actual mini user-level registration pending"
+      "status": "tracked remotely; current evidence and remaining gates in docs/project/validation.md"
     },
     {
       "id": "U03",
@@ -82,12 +81,12 @@
         "Recheck stable source evidence at effect/reconciliation boundaries."
       ],
       "version_impact": "major: 1.0.0",
-      "issue_number": null,
-      "issue_url": null,
-      "pr_url": null,
+      "issue_number": 3,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/3",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
       "commit_sha": null,
       "work_tag": null,
-      "status": "verified locally; remote tracking/publication pending"
+      "status": "tracked remotely; current evidence and remaining gates in docs/project/validation.md"
     },
     {
       "id": "U04",
@@ -106,12 +105,12 @@
         "Exercise restart, expiry, revoked access, callback failure and idempotent unsubscribe."
       ],
       "version_impact": "minor alone; included in 1.0.0",
-      "issue_number": null,
-      "issue_url": null,
-      "pr_url": null,
+      "issue_number": 4,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/4",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
       "commit_sha": null,
       "work_tag": null,
-      "status": "verified locally; remote tracking/publication pending"
+      "status": "tracked remotely; current evidence and remaining gates in docs/project/validation.md"
     },
     {
       "id": "U05",
@@ -134,12 +133,12 @@
         "Read back successful remote CI on the proposed PR head before remote completion."
       ],
       "version_impact": "none alone; supports 1.0.0",
-      "issue_number": null,
-      "issue_url": null,
-      "pr_url": null,
+      "issue_number": 5,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/5",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
       "commit_sha": null,
       "work_tag": null,
-      "status": "local artifact ready; remote acceptance pending"
+      "status": "tracked remotely; current evidence and remaining gates in docs/project/validation.md"
     },
     {
       "id": "U06",
@@ -165,16 +164,38 @@
         "Record outstanding account/platform acceptance without claiming it passed."
       ],
       "version_impact": "release 1.0.0 after gates",
-      "issue_number": null,
-      "issue_url": null,
-      "pr_url": null,
+      "issue_number": 6,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/6",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
       "commit_sha": null,
       "work_tag": null,
-      "status": "local artifact ready; remote acceptance pending"
+      "status": "tracked remotely; current evidence and remaining gates in docs/project/validation.md"
+    },
+    {
+      "id": "U07",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U07 -->",
+      "title": "Pin the Nix flake and direnv development environment",
+      "issue_number": 7,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/7",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
+      "work_tag": null,
+      "status": "prior macOS and remote CI passed; amendment revalidation pending",
+      "version_impact": "none alone"
+    },
+    {
+      "id": "U08",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U08 -->",
+      "title": "Ship an independent Dot connector and usable operator interfaces",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U08 -->\n\nComplete the reusable connection and installation boundaries. No transport preference is assumed.\n\nAcceptance criteria:\n- [ ] Compare MCP, CLI, skills and hooks using primary contracts and distinguish their roles.\n- [ ] Install the independent Dot connector without Buzz/ACP/Nostr and exercise non-Buzz event/filter/tool contracts.\n- [ ] Preserve existing Buzz MCP schemas, subscription IDs, encrypted state, generation fencing and the single publisher.\n- [ ] Provide documented public status, guarded pre-attempt recovery and signed delivery verification commands.\n- [ ] Verify both distributions, clean installations, exact-head Linux/macOS CI and secret scans.\n- [ ] Record the exact installed composition and real provider/relay acceptance separately from synthetic tests.\n- [ ] Link the reviewed PR, acceptance evidence, immutable work tag and release artifacts.\n\nDesign: docs/adr/0002-independent-dot-connector.md.\nValidation: docs/project/validation.md.\nVersion impact: included in the unreleased 1.0.0 major candidate; connector initial version 1.0.0. No registry publication or additional provider support is implied.\n",
+      "issue_number": 9,
+      "issue_url": "https://github.com/indiebrix/buzz-agent-bridge/issues/9",
+      "pr_url": "https://github.com/indiebrix/buzz-agent-bridge/pull/8",
+      "work_tag": null,
+      "status": "local acceptance passed; exact-head CI and live composition pending",
+      "version_impact": "included in unreleased 1.0.0; initial connector 1.0.0"
     }
   ],
-  "publication_status": "Project ready; Issues and publication via existing mini Alita App path pending",
+  "publication_status": "Issues 1\u20137 and 9 and draft PR #8 exist; amendment CI, live composition, completion tags and release pending",
   "project_url": "https://github.com/orgs/indiebrix/projects/2",
-  "project_id": "PVT_kwDOFBuYbM4BoMYv",
-  "project_status": "created private and repo-linked by mini; confirmed by parent"
+  "project_status": "existing private organization Project; reconcile through the approved App"
 }

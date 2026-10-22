@@ -12,15 +12,15 @@ Official release `desktop-v0.5.28` resolves to
 
 | Contract | Direct source and finding | Executable evidence |
 | --- | --- | --- |
-| Receiver file | [config.rs](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-acp/src/config.rs): `load_rules`, `TomlConfig`, `BUZZ_ACP_SUBSCRIBE` and `BUZZ_ACP_CONFIG`. | Generated TOML parsed with Python tomllib; installed CLI help confirms option/environment selection. Full Rust receiver-file loader not run. |
+| Receiver file | [config.rs](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-acp/src/config.rs): `load_rules`, `TomlConfig`, `BUZZ_ACP_SUBSCRIBE` and `BUZZ_ACP_CONFIG`. | Two tests compiled and executed the byte-identical official Rust loader and rule types: generated scope/mention configuration accepted; malformed or unsupported configuration rejected. Full workspace build not claimed. |
 | Channel and mention policy | [filter.rs](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-acp/src/filter.rs): `SubscriptionRule` and `ChannelScope`; one UUID, kind 9 and explicit mention flag match generated output. Owner-only authorization is a separate required gate. | Synthetic setup checks exact scope and no runtime mutation. |
 | Thread ancestry | [nip10.rs](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-core/src/nip10.rs): `ThreadMarkers.resolve` distinguishes direct/nested/top-level. | New four-case source tests; legacy schema-2 routing/reconciliation regression. |
 | Publication tags | [builders.rs](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-sdk/src/builders.rs): `thread_tags` emits reply-only for direct replies, root+reply for nested. | Signed direct/nested receipt tests, wrong-content/tag rejection. |
-| ACP intake | [lib.rs](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-acp/src/lib.rs) and installed `buzz-acp run`. | Official Linux binary runs the Python ACP frontend to durable admission with synthetic data. This does not test the relay receive loop. |
+| ACP intake | [lib.rs](https://github.com/block/buzz/blob/f87c10895ea35a9a2cea629fef1d7532a3fecbc5/crates/buzz-acp/src/lib.rs) and installed `buzz-acp run`. | Official Linux and installed macOS binaries run the Python ACP frontend to durable admission with synthetic data. This does not test the relay receive loop. |
 
-The full receiver loader runs after relay connection and channel discovery.
-Starting a service with real credentials to reach it is not part of offline tests.
-Do not describe tomllib parsing or `--help` as executing Rust `load_rules`.
+The normal receiver invokes its loader after relay connection and channel discovery.
+The isolated Rust harness executes the exact loader without credentials or a live
+relay. Generated TOML parsing and `--help` remain separate, weaker checks.
 
 ## OpenAI
 

@@ -1,6 +1,8 @@
 # ADR 0001: Portable internal boundaries in one Buzz Agent Bridge package
 
-Status: accepted for implementation planning; behavioral proof remains required.
+Status: historical initial decision. The module/policy boundaries remain;
+[ADR 0002](0002-independent-dot-connector.md) supersedes the single-distribution
+decision after an explicit independent-consumption requirement.
 Date: 2026-10-22.
 Baseline: `694642933a791c20d9d85254cd9b61afc3ae5be8`.
 

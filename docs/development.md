@@ -76,10 +76,10 @@ the tested dependency set; mini reported a coincurve build failure on Python
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.lock
+.venv/bin/python -m pip install --no-build-isolation --no-deps -e packages/chatgpt-dots
 .venv/bin/python -m pip install --no-build-isolation --no-deps -e .
 .venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python -m build --no-isolation
-.venv/bin/python scripts/check_distribution.py dist
+.venv/bin/python scripts/build_all.py
 .venv/bin/python scripts/clean_install.py dist/*.whl --constraints requirements.lock --tests tests
 ```
 
