@@ -35,3 +35,10 @@ Adapter changes need tests for wrong principal/destination, forged or expired
 callbacks, replay, ambiguous network outcomes, crash recovery, stale generation,
 and cancellation. Use synthetic identities locally. Run a separately authorized
 private-channel end-to-end test for a new real integration.
+
+The source-policy seam in `core/contracts.py` is internal and independently tested
+with a synthetic non-Nostr source. It does not add a supported messaging platform.
+Provider code stays under `adapters/chatgpt`; Buzz verification/publication lives
+under `adapters/buzz`. Existing `AgentProvider` and `ProviderBinding` interfaces
+remain in `providers.py`. A response publisher must return explicit signed-readback
+evidence; acknowledgement alone leaves delivery uncertain.

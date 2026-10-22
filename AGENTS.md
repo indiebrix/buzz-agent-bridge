@@ -21,7 +21,12 @@ This repository contains reusable product code and synthetic examples only.
 
 ## Development and verification
 
-Use a virtual environment and the pinned dependencies. Run `python -m unittest
+Use the locked Nix development shell and a virtual environment with the pinned
+Python dependencies; see `docs/development.md`. Review `.envrc` and `flake.nix`
+before granting local direnv trust. Never install Nix system-wide or run
+`direnv allow` on a developer host as an incidental test step. When Nix is absent,
+report the missing executable and use the documented non-Nix verification path.
+Run `python -m unittest
 discover -s tests -v`, then build the package as described in `docs/development.md`.
 Some Unix socket tests need local socket permission. The optional installed Buzz
 gate needs `BUZZ_ACP_BINARY`; report skips rather than calling them passes.
@@ -38,3 +43,10 @@ English. Separate implementation, installation, and real provider acceptance.
 Use only the authorized release identity and signing method. Inspect attribution
 and verification on the actual remote commit. Do not publish private repository
 history or unrelated assets. Do not claim official affiliation or first/only status.
+
+## Tracked work
+
+Follow this project's [release policy](docs/releases/policy.md): GitHub Issues,
+Conventional Commits, strict SemVer, immutable unit tags and verified releases.
+Read the current [progress record](docs/project/status.md) before creating remote
+work items; reuse stable issue markers and the existing organization Project.

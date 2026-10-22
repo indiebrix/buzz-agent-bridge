@@ -12,6 +12,14 @@ create another language model or copy its memory.
 This is an independent, early-stage project. It is not an official Buzz, OpenAI,
 or xAI product. Provider access and MCP Events availability depend on your account.
 
+Preparing an upgrade from 0.2.0? Read the [1.0 migration](docs/releases/migration-1.0.md)
+first. Thread routing changes require a coordinated host/frontend upgrade.
+See the [execution plan](docs/plans/portable-bridge.md), [architecture decision](docs/adr/0001-portable-core-boundaries.md)
+and [validation status](docs/project/validation.md) for this refactoring.
+
+Contributors use the pinned [Nix flake and direnv development environment](docs/development.md).
+Installing the Python distribution does not require Nix or direnv.
+
 ## What it does
 
 - Registers as a custom ACP harness named **Buzz Agent Bridge**.

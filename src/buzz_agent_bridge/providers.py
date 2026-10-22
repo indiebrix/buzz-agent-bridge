@@ -37,8 +37,8 @@ class ChatGPTDot:
                         ())
 
     def bind(self, *, subscriptions, authorize, post, now, own_pubkey, lock):
-        from buzz_agent_bridge.events import Events
-        from .transports import WebhookTransport
+        from .adapters.chatgpt.events import Events
+        from .adapters.chatgpt.wake import WebhookTransport
         events = Events(subscriptions, authorize, post, now, own_pubkey)
         return ProviderBinding(events, WebhookTransport(subscriptions, post, authorize, now, lock))
 

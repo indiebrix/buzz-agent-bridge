@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import queue
 import signal
+import shlex
 import socket
 import sqlite3
 import subprocess
@@ -326,12 +327,15 @@ class FullCompositionTests(Fixture, unittest.TestCase):
                            "tags": [["h", CHANNEL], ["e", "a" * 64, "", "root"], ["e", source, "", "reply"]]})
         self.events[reply["id"]] = reply
         cli = Path(self.temp.name) / "fixture-cli"
+        cli_script = Path(self.temp.name) / "fixture-cli.py"
         calls = Path(self.temp.name) / "calls"
-        cli.write_text(f"#!{sys.executable}\nimport json,sys\n"
+        cli_script.write_text("import json,sys\n"
                        f"from pathlib import Path\nPath({str(calls)!r}).open('a').write('called\\n')\n"
                        "body=sys.stdin.read()\n"
                        "assert body=='synthetic final'\n"
                        f"print({json.dumps({'accepted': True, 'event_id': reply['id']})!r})\n")
+        cli.write_text("#!/bin/sh\nexec " + shlex.quote(sys.executable) + " "
+                       + shlex.quote(str(cli_script)) + ' "$@"\n')
         cli.chmod(0o700)
         callbacks = []
         def post(url, body, headers):

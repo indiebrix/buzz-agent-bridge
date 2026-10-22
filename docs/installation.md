@@ -5,7 +5,7 @@
 Use a Unix host. The deployment path was developed against Buzz Desktop 0.5.28;
 Windows is not supported by the Unix-socket and process-lock implementation.
 Use Python 3.11 or newer. The configurable package has a clean installation check
-on Python 3.11/macOS arm64; the original runtime was validated on Python 3.14.8.
+on Python 3.11/macOS arm64 and Python 3.12/Linux x86-64; the original runtime was validated on Python 3.14.8.
 The ACP SDK is pinned to 0.12.1. Build prerequisites for `coincurve` depend on your Python
 and platform; use a supported wheel or follow the dependency's official build
 instructions instead of weakening signature verification.
@@ -13,6 +13,9 @@ instructions instead of weakening signature verification.
 This guide uses one managed Buzz identity, one owner, one private channel, and one
 existing ChatGPT Dot. Do not run a second receiver or publisher for that identity.
 Keep existing working configuration and encrypted state available for rollback.
+
+For an existing deployment, read the [1.0 migration and recovery limits](releases/migration-1.0.md)
+before installing over any existing environment. Keep the same Dot and scope.
 
 ## 1. Install the package
 

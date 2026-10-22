@@ -102,7 +102,7 @@ class Fixture:
 class FakeTransport:
     def __init__(self, receipt=None, error=None):
         self.calls = []
-        self.receipt = receipt or {"accepted": True, "event_id": "c" * 64}
+        self.receipt = receipt or {"accepted": True, "event_id": "c" * 64, "signed_readback": True}
         self.error = error
 
     def prepare(self, job, entry):
@@ -171,6 +171,7 @@ class LedgerTests(Fixture, unittest.TestCase):
     def test_insecure_directory_and_symlink_fail_closed(self):
         wrong = Path(self.temp.name) / "world"
         wrong.mkdir(mode=0o755)
+        wrong.chmod(0o755)  # Explicit fixture, independent of the process umask.
         with self.assertRaises(PermissionError): Ledger(wrong, self.codec.seal, self.codec.open)
         link = Path(self.temp.name) / "link"
         link.symlink_to(self.directory)

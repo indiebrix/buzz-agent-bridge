@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "project_owner": "indiebrix",
+  "project_title": "buzz-agent-bridge",
+  "repository": "indiebrix/buzz-agent-bridge",
+  "baseline": "694642933a791c20d9d85254cd9b61afc3ae5be8",
+  "remote_owner": "existing mini Alita App session",
+  "cloud_remote_writes": false,
+  "units": [
+    {
+      "id": "U01",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U01 -->",
+      "title": "Document portable bridge architecture and compatibility evidence",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U01 -->\n\nDocument portable bridge architecture and compatibility evidence\n\nAcceptance criteria:\n- [ ] Compare package/repo/submodule options using actual code.\n- [ ] Record upstream revisions, actual parser mismatch and executed vs pending gates.\n- [ ] Record strict major decision and finite acceptance criteria.\n\nVersion impact: none.\n\nEvidence: docs/project/validation.md and docs/project/upstream-contracts.md.\nDo not close until required remote or external gates are recorded.\n",
+      "commit_subject": "docs: record the portable bridge plan and upstream contracts",
+      "files": [
+        "docs/plans/portable-bridge.md",
+        "docs/adr/0001-portable-core-boundaries.md",
+        "docs/project/upstream-contracts.md"
+      ],
+      "acceptance": [
+        "Compare package/repo/submodule options using actual code.",
+        "Record upstream revisions, actual parser mismatch and executed vs pending gates.",
+        "Record strict major decision and finite acceptance criteria."
+      ],
+      "version_impact": "none",
+      "issue_number": null,
+      "issue_url": null,
+      "pr_url": null,
+      "commit_sha": null,
+      "work_tag": null,
+      "status": "verified locally; remote tracking/publication pending"
+    },
+    {
+      "id": "U02",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U02 -->",
+      "title": "Prepare the personal commit skill and project release policy",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U02 -->\n\nPrepare the personal commit skill and project release policy\n\nAcceptance criteria:\n- [ ] Preserve retrieved original intent and remove unconditional co-author attribution.\n- [ ] Provide a self-contained user-level SKILL.md with installation/checksum/conflict instructions.\n- [ ] Remove the generated repo-discovered copy and retain non-discovered reinstall source.\n- [ ] Validate skill scenarios and safe installer behavior in temporary directories.\n- [ ] Parent verifies actual mini user-level installation, single active skill and unrelated-repository dry-run.\n- [ ] Use stable issue markers and immutable work tags without duplicate creates.\n\nVersion impact: none.\n\nSource: contrib/commit-skill. Project policy: docs/releases/policy.md.\nDo not close until actual mini installation/discovery evidence is recorded.\n",
+      "commit_subject": "chore: separate the personal commit skill from project release policy",
+      "files": [
+        "contrib/commit-skill/",
+        "docs/releases/policy.md",
+        "docs/project/issues.json",
+        "AGENTS.md",
+        "CONTRIBUTING.md"
+      ],
+      "acceptance": [
+        "Preserve retrieved original intent and remove unconditional co-author attribution.",
+        "Provide a self-contained user-level SKILL.md with installation/checksum/conflict instructions.",
+        "Remove the generated repo-discovered copy and retain non-discovered reinstall source.",
+        "Validate skill scenarios and safe installer behavior in temporary directories.",
+        "Parent verifies actual mini user-level installation, single active skill and unrelated-repository dry-run.",
+        "Use stable issue markers and immutable work tags without duplicate creates."
+      ],
+      "version_impact": "none",
+      "issue_number": null,
+      "issue_url": null,
+      "pr_url": null,
+      "commit_sha": null,
+      "work_tag": null,
+      "status": "distribution verified locally; actual mini user-level registration pending"
+    },
+    {
+      "id": "U03",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U03 -->",
+      "title": "Separate verified source and provider adapters and correct thread routing",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U03 -->\n\nSeparate verified source and provider adapters and correct thread routing\n\nAcceptance criteria:\n- [ ] Prove unsigned response receipt remains uncertain without retry.\n- [ ] Prove a non-Nostr source lifecycle and rejection of unverified/rescoped evidence.\n- [ ] Preserve imports, schema-2 snapshots and request IDs.\n- [ ] Test direct/nested/root-only/top-level and legacy pending/uncertain routing.\n- [ ] Recheck stable source evidence at effect/reconciliation boundaries.\n\nVersion impact: major: 1.0.0.\n\nEvidence: docs/project/validation.md and docs/project/upstream-contracts.md.\nDo not close until required remote or external gates are recorded.\n",
+      "commit_subject": "refactor!: separate durable source contracts and correct Buzz thread routing",
+      "files": [
+        "src/buzz_agent_bridge/",
+        "pyproject.toml",
+        "tests/test_portable_contracts.py",
+        "tests/test_buzz_durable_jobs.py",
+        "tests/test_setup.py",
+        "docs/releases/migration-1.0.md"
+      ],
+      "acceptance": [
+        "Prove unsigned response receipt remains uncertain without retry.",
+        "Prove a non-Nostr source lifecycle and rejection of unverified/rescoped evidence.",
+        "Preserve imports, schema-2 snapshots and request IDs.",
+        "Test direct/nested/root-only/top-level and legacy pending/uncertain routing.",
+        "Recheck stable source evidence at effect/reconciliation boundaries."
+      ],
+      "version_impact": "major: 1.0.0",
+      "issue_number": null,
+      "issue_url": null,
+      "pr_url": null,
+      "commit_sha": null,
+      "work_tag": null,
+      "status": "verified locally; remote tracking/publication pending"
+    },
+    {
+      "id": "U04",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U04 -->",
+      "title": "Verify MCP subscription refresh and unchanged public schemas",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U04 -->\n\nVerify MCP subscription refresh and unchanged public schemas\n\nAcceptance criteria:\n- [ ] Compare discovery/event/tool schemas to captured public baseline.\n- [ ] Independently verify signed callback/event bytes, bounded cache and old/new key overlap.\n- [ ] Exercise restart, expiry, revoked access, callback failure and idempotent unsubscribe.\n\nVersion impact: minor alone; included in 1.0.0.\n\nEvidence: docs/project/validation.md and docs/project/upstream-contracts.md.\nDo not close until required remote or external gates are recorded.\n",
+      "commit_subject": "feat: verify MCP refresh caching and signing key rotation",
+      "files": [
+        "src/buzz_agent_bridge/adapters/chatgpt/",
+        "tests/test_mcp_contracts.py",
+        "tests/fixtures/public-contract.json"
+      ],
+      "acceptance": [
+        "Compare discovery/event/tool schemas to captured public baseline.",
+        "Independently verify signed callback/event bytes, bounded cache and old/new key overlap.",
+        "Exercise restart, expiry, revoked access, callback failure and idempotent unsubscribe."
+      ],
+      "version_impact": "minor alone; included in 1.0.0",
+      "issue_number": null,
+      "issue_url": null,
+      "pr_url": null,
+      "commit_sha": null,
+      "work_tag": null,
+      "status": "verified locally; remote tracking/publication pending"
+    },
+    {
+      "id": "U05",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U05 -->",
+      "title": "Add portable CI and isolated distribution acceptance",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U05 -->\n\nAdd portable CI and isolated distribution acceptance\n\nAcceptance criteria:\n- [ ] Run suite with restrictive umask and separately verify installed official ACP.\n- [ ] Inspect wheel/sdist contents, MIT/version coherence, and scan exact artifacts.\n- [ ] Install wheel outside checkout with clean environment and a path containing spaces.\n- [ ] Read back successful remote CI on the proposed PR head before remote completion.\n\nVersion impact: none alone; supports 1.0.0.\n\nEvidence: docs/project/validation.md and docs/project/upstream-contracts.md.\nDo not close until required remote or external gates are recorded.\n",
+      "commit_subject": "ci: validate pinned builds and clean wheel installations",
+      "files": [
+        ".github/workflows/ci.yml",
+        "requirements-dev.lock",
+        "requirements.lock",
+        "scripts/",
+        "MANIFEST.in",
+        "docs/development.md"
+      ],
+      "acceptance": [
+        "Run suite with restrictive umask and separately verify installed official ACP.",
+        "Inspect wheel/sdist contents, MIT/version coherence, and scan exact artifacts.",
+        "Install wheel outside checkout with clean environment and a path containing spaces.",
+        "Read back successful remote CI on the proposed PR head before remote completion."
+      ],
+      "version_impact": "none alone; supports 1.0.0",
+      "issue_number": null,
+      "issue_url": null,
+      "pr_url": null,
+      "commit_sha": null,
+      "work_tag": null,
+      "status": "local artifact ready; remote acceptance pending"
+    },
+    {
+      "id": "U06",
+      "marker": "<!-- buzz-agent-bridge:portable-v1:U06 -->",
+      "title": "Prepare reviewed 1.0.0 release and linked work records",
+      "body": "<!-- buzz-agent-bridge:portable-v1:U06 -->\n\nPrepare reviewed 1.0.0 release and linked work records\n\nAcceptance criteria:\n- [ ] Publish through authorized Alita App path with verified attribution/signature.\n- [ ] Link actual Project, issues, PR, unit tags and release target; reuse existing matches.\n- [ ] Report results before main replacement; preserve all history, tags and live mini state.\n- [ ] Record outstanding account/platform acceptance without claiming it passed.\n\nVersion impact: release 1.0.0 after gates.\n\nEvidence: docs/project/validation.md and docs/project/upstream-contracts.md.\nDo not close until required remote or external gates are recorded.\n",
+      "commit_subject": "docs: prepare the 1.0.0 migration and release evidence",
+      "files": [
+        "README.md",
+        "docs/components.md",
+        "docs/architecture.md",
+        "docs/providers.md",
+        "docs/installation.md",
+        "docs/releases/1.0.0.md",
+        "docs/project/status.md",
+        "docs/project/validation.md",
+        "docs/project/handoff.md"
+      ],
+      "acceptance": [
+        "Publish through authorized Alita App path with verified attribution/signature.",
+        "Link actual Project, issues, PR, unit tags and release target; reuse existing matches.",
+        "Report results before main replacement; preserve all history, tags and live mini state.",
+        "Record outstanding account/platform acceptance without claiming it passed."
+      ],
+      "version_impact": "release 1.0.0 after gates",
+      "issue_number": null,
+      "issue_url": null,
+      "pr_url": null,
+      "commit_sha": null,
+      "work_tag": null,
+      "status": "local artifact ready; remote acceptance pending"
+    }
+  ],
+  "publication_status": "Project ready; Issues and publication via existing mini Alita App path pending",
+  "project_url": "https://github.com/orgs/indiebrix/projects/2",
+  "project_id": "PVT_kwDOFBuYbM4BoMYv",
+  "project_status": "created private and repo-linked by mini; confirmed by parent"
+}

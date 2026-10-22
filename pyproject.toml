@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "buzz-agent-bridge"
-version = "0.2.0"
+version = "1.0.0"
 description = "Connect existing remote agents to Buzz through ACP and durable jobs"
 readme = "README.md"
 license = "MIT"

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "skill_name": "commit",
+  "distribution_revision": 2,
+  "skill_files": {
+    "SKILL.md": "f9907ef872799f803dc337b021072c9c83eba2fc472c31408b3eb8e08fa0d73d"
+  },
+  "installation_status": "pending on mini; distribution source only"
+}

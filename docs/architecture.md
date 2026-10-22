@@ -72,3 +72,22 @@ Backups do not roll back external effects. Operators must explicitly quarantine
 restored work; arbitrary rollback cannot be detected without an external monotonic
 authority. Capacity is bounded at 10,000 jobs until a reviewed retention policy
 exists. See [security](../SECURITY.md).
+
+## Internal source and provider boundaries
+
+`core/broker.py` consumes `SourcePolicy.read` and an immutable `VerifiedSource`.
+The trusted `adapters/buzz/source.py` policy re-fetches signed evidence and enforces
+owner, channel, kind, time and thread interpretation. The lifecycle rechecks
+authorization and stable source fields. `adapters/buzz/publisher.py` alone sends
+via the official CLI and checks the exact signed receipt. A signed-readback flag
+is a contract between reviewed local components, never proof from remote content.
+
+`adapters/chatgpt` owns registration and signed wake-up; it never obtains the Buzz
+key or starts another Dot. The callback verification cache and signing overlap
+last at most five minutes. Expired subscriptions cannot wake jobs. HTTP receipt
+remains acknowledgement only. Legacy module paths are forwarding facades.
+
+Schema 2, job IDs and original source snapshots remain stable. Current verified
+source routing is used in ephemeral publication/reconciliation plans. See the
+[1.0 migration](releases/migration-1.0.md) for the deliberate major change to
+reply-only and root-only source semantics.

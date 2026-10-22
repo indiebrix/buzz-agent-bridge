@@ -19,3 +19,6 @@ add undocumented session scraping or automatic permission expansion as a fallbac
 
 Third-party contributions must identify their source and license. Do not copy code
 from related projects without reviewing compatibility and required notices.
+
+Use this project's [release policy](docs/releases/policy.md). Link a GitHub issue to each unit;
+apply strict SemVer even before 1.0 and keep work tags distinct from product releases.

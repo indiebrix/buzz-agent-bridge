@@ -5,11 +5,12 @@ import time
 
 from buzz_agent_bridge.crypto import AEADCodec, verify_nostr
 from buzz_agent_bridge.http import ProtectedStore, PublicHTTPS, RPC, http_server
-from .broker import Broker
+from .core.broker import Broker
+from .adapters.buzz.source import BuzzSourcePolicy
 from .ipc import LocalServer
 from .ledger import Ledger, private_directory
 from .tools import JobTools
-from .transports import CliTransport
+from .adapters.buzz.publisher import CliTransport
 from .providers import bind_provider_scope, get_provider
 
 
@@ -38,8 +39,10 @@ class Application:
         self.subscription_lock = threading.RLock()
         self.authorize = lambda actor, target: actor == principal and target == channel and authorize(actor, target)
         try:
-            self.broker = Broker(self.ledger, principal, channel, owner, self.authorize, fetch,
-                                 verify_nostr, activation=activation, now=now, audit=audit)
+            self.broker = Broker(self.ledger, principal, channel, owner, self.authorize,
+                                 BuzzSourcePolicy(fetch, verify_nostr, owner, channel,
+                                                  activation=activation, now=now),
+                                 activation=activation, now=now, audit=audit)
         except BaseException:
             self.close()
             raise

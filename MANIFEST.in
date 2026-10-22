@@ -1,4 +1,10 @@
 include README.md AGENTS.md CONTRIBUTING.md SECURITY.md requirements.lock
 recursive-include docs *.md
 recursive-include examples *.py *.example
-recursive-include tests *.py
+recursive-include tests *.py *.json
+include requirements-dev.lock
+include flake.nix flake.lock .envrc
+recursive-include scripts *.py
+recursive-include scripts *.sh
+recursive-include contrib/commit-skill *.md *.py *.json
+recursive-include docs *.json
