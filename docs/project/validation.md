@@ -5,6 +5,25 @@ Initial validation environment: Linux x86-64, CPython 3.12.14. Fixtures are synt
 All local checks below completed before the publication handoff; remote acceptance
 is deliberately separate.
 
+## Blocked wake recovery acceptance (2026-10-22)
+
+A candidate request was admitted but blocked before any webhook attempt. The
+original authorization failure detail was not retained. An explicit one-time
+recovery now revalidates current signed source, scope and generation, and rejects
+attempted, uncertain, cancelled, quarantined or completed work. Safe diagnostics
+retain status codes or error categories without response bodies or credentials.
+
+The amended macOS source suite passed all 69 tests, including installed official
+Buzz ACP. Offline wheel installation passed 68 tests with one unconfigured Buzz
+gate skip; distribution inspection and secret scanning passed. In the private
+acceptance deployment, the original generation received one HTTP 200 wake,
+completed through the existing Dot, and produced one signature-verified relay
+reply with the expected identity, channel and body. The duplicate check was bounded
+to 100 events. This proves recovery of that request, not first-attempt delivery of
+a subsequent new message. No new credentials or permissions were needed. CI for
+this amendment and the release decision remain pending; earlier records below
+describe their original candidate snapshots.
+
 ## Subsequent macOS acceptance (2026-10-22)
 
 The Nix-amended candidate was independently materialized and checked on macOS

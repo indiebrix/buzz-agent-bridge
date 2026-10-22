@@ -56,6 +56,16 @@ Cancellation before admission can prevent intake. Cancellation after admission
 fences future effects but cannot assert that a remote provider has stopped. The
 current ChatGPT adapter has no remote execution-stop API.
 
+An authorization or signed-source rejection before effect preparation marks the
+outbox entry `blocked`; it has no destination or HTTP attempt. A trusted operator
+embedding may explicitly call `resume_blocked_wake` once after reviewing the cause.
+The broker requires the same request and generation, revalidates scope and signed
+source, and rejects any attempt metadata, prior resume, completion, cancellation,
+quarantine or expiry. It only reopens the existing wake intent for the ordinary
+single-attempt worker. Sending, uncertain and acknowledged effects never qualify;
+no automatic retry or remote recovery endpoint is added. Safe audit codes retain
+the gate reason and relay HTTP status without URLs, credentials or message text.
+
 ## State and lifecycle
 
 The state directory is `0700`, files and sockets `0600`, and Unix peers must have

@@ -290,13 +290,19 @@ class Broker:
             try:
                 job = self._job(self.principal, entry["request_id"])
                 source = self.current_source(self.principal, job)
-            except PermissionError:
+            except PermissionError as error:
+                reason = {"Scope denied": "principal_or_membership",
+                          "Source scope denied": "source_scope",
+                          "Source outside activation window": "activation_window"}.get(
+                              str(error), "permission_denied")
                 with self.ledger.transaction():
-                    entry["state"] = "blocked"
+                    entry.update(state="blocked", blocked_reason=reason)
                     self.ledger.put("outbox", entry["id"], entry)
                     job = self.ledger.get("jobs", entry["request_id"])
                     job["dispatch" if stage == "wake" else "delivery"] = "blocked"
                     self.ledger.put("jobs", job["request_id"], job)
+                self.audit({"event": "effect_blocked", "stage": stage,
+                            "state": reason, "request_id": job["request_id"]})
                 return {"state": "blocked"}
             with self.ledger.transaction():
                 if (job["cancel_requested"] or job["quarantined"] or job["deadline"] <= self.now()
@@ -341,3 +347,32 @@ class Broker:
             self.audit({"event": "effect_finished", "stage": stage, "state": entry["state"],
                         "request_id": job["request_id"]})
             return {"state": entry["state"]}
+
+    def resume_blocked_wake(self, principal, ident, generation):
+        """Explicit one-time recovery of a wake that never reached preparation.
+
+        No network send occurs here. Revalidate current signed source and scope,
+        then let the ordinary effect gate make its single attempt. Never rearm
+        sending, uncertain, acknowledged, completed, or previously resumed work.
+        """
+        with self.effects, self.ledger.transaction():
+            job = self._job(principal, ident, generation)
+            self.current_source(principal, job)
+            entry = self.ledger.get("outbox", outbox_id(job, "wake"))
+            allowed_keys = {"id", "request_id", "generation", "stage", "state", "blocked_reason"}
+            if (job["execution"] != "accepted" or job["dispatch"] != "blocked"
+                    or job["delivery"] != "waiting" or job["dot_job_id"] is not None
+                    or job["cancel_requested"] or job["quarantined"]
+                    or job["deadline"] <= self.now() or job.get("event_id")
+                    or "completion_digest" in job or entry is None
+                    or set(entry) - allowed_keys or entry["state"] != "blocked"
+                    or entry["stage"] != "wake" or entry["request_id"] != ident
+                    or entry["generation"] != generation
+                    or self.ledger.get("outbox", outbox_id(job, "response")) is not None):
+                raise ValueError("Only an unattempted blocked wake can resume once")
+            entry.update(state="pending", resume_count=1)
+            job["dispatch"] = "pending"
+            self.ledger.put("outbox", entry["id"], entry)
+            self.ledger.put("jobs", ident, job)
+        self.audit({"event": "wake_resumed", "stage": "wake", "request_id": ident})
+        return self.summary(job)
